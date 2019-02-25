@@ -9,7 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using TripTracker.BackService.Data;
+using Microsoft.EntityFrameworkCore;
 namespace TripTracker.BackService
 {
     public class Startup
@@ -28,6 +29,9 @@ namespace TripTracker.BackService
         {
             services.AddTransient<Models.Repository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<TripContext>(options => options.UseSqlite("Data Source= SunilsTrips.db"));
+
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Trip tracker", Version = "v1" }));
         }
 
@@ -46,7 +50,7 @@ namespace TripTracker.BackService
             }
 
             app.UseMvc();
-
+            TripContext.SeedData(app.ApplicationServices);
         }
     }
 }
