@@ -20,14 +20,25 @@ namespace TripTracker.BackService.Controllers
         public TripsController(TripContext context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+           // _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         // GET api/Trip
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            var trips = await _context.Trips.ToListAsync();
+            var trips = await _context.Trips.
+                AsNoTracking().
+                Include(t=>t.Segments)
+                .Select(t=> new TripWithSegments
+                {
+                    Id=t.Id,
+                    Name=t.Name,
+                    StartDate=t.StartDate,
+                    EndDate=t.EndDate,
+                    Segments=t.Segments
+                })
+                .ToListAsync();
             return Ok(trips);
         }
 

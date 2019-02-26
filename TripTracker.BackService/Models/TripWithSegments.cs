@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace TripTracker.BackService.Models
 {
-    public class Segment:TripTrackerDTO.Segment
+    public class TripWithSegments:TripTrackerDTO.Trip
     {
-       
+        public ICollection<Segment> Segments { get; set; }
     }
 }
